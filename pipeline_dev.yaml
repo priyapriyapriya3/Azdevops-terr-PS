@@ -1,0 +1,11 @@
+#azure devops pipeline code
+
+#write code to  run the innitial.ps1 script
+steps:
+- powershell: |
+    ./innitial.ps1
+  displayName: 'Run PowerShell Script'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  
+
+  
