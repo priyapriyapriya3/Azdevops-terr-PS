@@ -9,7 +9,21 @@
 #     "clientIds": ["vvv", "sss"]
 # }
 
+#add documentation to below script
+    
+<#
+.SYNOPSIS
+This script generates YAML files for Kubernetes ServiceAccounts based on a JSON configuration file.
 
+.DESCRIPTION
+The script takes a JSON configuration file as input and iterates through the namespaces and names specified in the configuration. For each combination of namespace and name, it generates a YAML file for a Kubernetes ServiceAccount with the corresponding metadata and annotations.
+
+.PARAMETER configFilePath
+The path to the JSON configuration file.
+
+.EXAMPLE
+.\jsoninput.ps1 -configFilePath "C:\path\to\config.json"
+#>
 
 param(
     [Parameter(Mandatory=$true)]
@@ -40,4 +54,3 @@ metadata:
         }
     }
 }
-
