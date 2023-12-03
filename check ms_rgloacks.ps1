@@ -13,27 +13,36 @@ Set-AzContext -Subscription "subscriptionname"
 
 #write all below logic to a function and call the function in powershell 
 
+function CheckAKSResourceGroupLocks {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$clusterName,
 
-#check and run below command if cluster exists powershell command
-if (Get-AzResource -ResourceType "Microsoft.ContainerService/managedClusters" -ResourceName $clustername -ErrorAction SilentlyContinue) {
-    Write-Host "Cluster exists"
+        [Parameter(Mandatory=$true)]
+        [string]$resourceGroupName
+    )
+
+    # Check if the AKS cluster exists
+    $cluster = Get-AzAks -ResourceGroupName $resourceGroupName -Name $clusterName -ErrorAction SilentlyContinue
+
+    if ($null -eq $cluster) {
+        Write-Output "The AKS cluster $clusterName does not exist in the resource group $resourceGroupName."
+        return
+    }
+
+    # Get the MC resource group name
+    $mcResourceGroupName = $cluster.NodeResourceGroup
+
+    # Check if locks are applied to the MC resource group
+    $locks = Get-AzResourceLock -ResourceGroupName $mcResourceGroupName
+
+    if ($locks.Count -gt 0) {
+        Write-Output "The following locks are applied to the MC resource group $mcResourceGroupName:"
+        $locks | ForEach-Object { Write-Output $_.Name }
+    } else {
+        Write-Output "No locks are applied to the MC resource group $mcResourceGroupName."
+    }
 }
-else {
-    Write-Host "Cluster does not exist"
-}
-#get az aks cluster MC resource group name powershell commands
-$rgname = Get-AzResource -ResourceType "Microsoft.ContainerService/managedClusters" -ResourceName $clustername -ExpandProperties | Select-Object -ExpandProperty ResourceGroupName
 
-#check if loaks are applied to MC resource group powershell commands and output to console
-
-$locks = Get-AzResourceLock -ResourceGroupName $rgname
-if ($locks) {
-    Write-Host "Locks applied to MC resource group"
-    Write-Host $locks
-}
-else {
-    Write-Host "No locks applied to MC resource group"
-}
-
-
-
+# Call the function
+CheckAKSResourceGroupLocks -clusterName "yourClusterName" -resourceGroupName "yourResourceGroupName"
