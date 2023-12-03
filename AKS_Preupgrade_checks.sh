@@ -87,10 +87,4 @@ def scale_down_AKS Cluster():
             echo "az aks nodepool scale --resource-group $AKS_RESOURCE_GROUP_akscluster --cluster-name $AKS_CLUSTER_NAME --name $nodepool --node-count $count"
         fi
     done    
-   
-
-
-    echo "Scaling down AKS cluster nodes"
-    az aks scale --resource-group $AKS_RESOURCE_GROUP_akscluster --name $AKS_CLUSTER_NAME --node-count 1
-
 
