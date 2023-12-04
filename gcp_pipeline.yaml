@@ -4,3 +4,27 @@
 
 
 
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    python your_script.py
+  displayName: 'Run Python Script'
+  workingDirectory: $(System.DefaultWorkingDirectory)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: 'path/to/destination/artifacts'
+    artifactName: 'published-artifacts'
+    publishLocation: 'Container'

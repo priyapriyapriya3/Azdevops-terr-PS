@@ -11,6 +11,7 @@ do
     az identity show --ids $id --query clientId -o tsv
 done
 
-#call and execute terraform file 
+
+
 
 
